@@ -1,0 +1,15 @@
+train_generator = datagen.flow_from_directory(
+    './dataset/split_data/train/',
+    target_size=target_size,
+    batch_size=batch_size,
+    class_mode='categorical',
+    shuffle=False)  # data is ordered
+
+num_train_samples = len(train_generator.filenames)
+
+# load vgg features
+train_data = np.load('res/vgg_train_features.npy')
+
+train_labels = train_generator.classes
+train_labels_onehot = to_categorical(train_labels, num_classes=num_classes)
+
