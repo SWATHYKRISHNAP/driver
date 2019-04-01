@@ -1,0 +1,27 @@
+model = create_top_model("softmax", train_data.shape[1:])
+model.compile(optimizer="rmsprop", loss="categorical_crossentropy", metrics=["accuracy"])
+
+# only save the best weights. if the accuracy doesnt improve in 2 epochs, stop.
+checkpoint_callback = ModelCheckpoint(
+    "res/top_model_weights.h5",  # store weights with this file name
+    monitor='val_acc',
+    verbose=1,
+    save_best_only=True,
+    mode='max')
+
+early_stop_callback = EarlyStopping(
+    monitor='val_acc',
+    patience=2,  # max number of epochs to wait
+    mode='max')
+
+callbacks_list = [checkpoint_callback, early_stop_callback]
+
+# train the model
+history = model.fit(
+    train_data,
+    train_labels_onehot,
+    epochs=epochs,
+    batch_size=batch_size,
+    # validation_data=val_data,
+
+    callbacks=callbacks_list)
